@@ -2,14 +2,8 @@
 // Created by n-naka on 2016/12/30.
 //
 
-#define GLESv3
-
 #include <string>
-#ifdef GLESv3
-#include <GLES3/gl3.h>
-#else
-#include <GLES2/gl2.h>
-#endif
+#include "gl_lib.h"
 #include "Log.h"
 #include "GLMain.h"
 
@@ -17,18 +11,6 @@ struct Vertex {
     GLfloat pos[2];
     GLubyte rgba[4];
 };
-
-static void printGLString(const char *name, GLenum s) {
-    const char *v = (const char *) glGetString(s);
-    LOGI("GL %s = %s\n", name, v);
-}
-
-static void checkGlError(const char* op) {
-    for (GLint error = glGetError(); error; error
-                                                    = glGetError()) {
-        LOGI("after %s() glError (0x%x)\n", op, error);
-    }
-}
 
 #ifdef GLESv3
 #define STR(s) #s
