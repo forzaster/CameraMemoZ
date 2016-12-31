@@ -3,8 +3,8 @@
 //
 
 #include <string>
+#include "../Log.h"
 #include "gl_lib.h"
-#include "Log.h"
 #include "GLMain.h"
 
 struct Vertex {
