@@ -1,8 +1,7 @@
 package com.forzaster.cameramemoz;
 
 import android.os.Bundle;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.TextureView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -29,12 +28,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(GLMain.instance().stringFromJNI());
+        if (getFragmentManager().findFragmentByTag(CameraFragment.TAG) == null) {
+            getFragmentManager().beginTransaction().add(R.id.content_main, new CameraFragment(), CameraFragment.TAG).commit();
+        }
 
-        ViewGroup vg = (ViewGroup)findViewById(R.id.content_main);
-        vg.addView(new GLView(getApplicationContext()));
     }
 
     @Override
@@ -59,5 +56,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
