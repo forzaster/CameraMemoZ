@@ -51,8 +51,6 @@ static const Vertex sQuad[4] = {
         {{-0.7f,  0.7f}, {0xFF, 0x00, 0x00}, {0.0f, 1.0f}},
         {{ 0.7f,  0.7f}, {0xFF, 0xFF, 0xFF}, {1.0f, 1.0f}},
 };
-static const GLfloat sTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f,
-                                      0.5f, -0.5f };
 
 static GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
