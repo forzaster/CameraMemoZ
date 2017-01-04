@@ -23,6 +23,7 @@ public class GLMain {
      */
     public native void init(int width, int height);
     public native void draw();
+    public native int genTexture();
     public native String stringFromJNI();
 
     // Used to load the 'native-lib' library on application startup.

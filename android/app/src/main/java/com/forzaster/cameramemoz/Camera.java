@@ -95,12 +95,17 @@ public class Camera {
     private boolean mIsInitialized;
     private CaptureRequest.Builder mRequestBuilder;
     private CaptureRequest mCaptureRequest;
+    private int mTexture = -1;
+    private SurfaceTexture mSurfaceTexture;
+    private boolean mSurfaceUpdateRequest;
 
     public Camera(Context context, TextureView tv) {
         mContext = context;
         mCameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
         mTextureView = tv;
-        mTextureView.setSurfaceTextureListener(mTextureListener);
+        if (mTextureView != null) {
+            mTextureView.setSurfaceTextureListener(mTextureListener);
+        }
 
         mBackgroundThread = new HandlerThread("CameraBackgroundThread");
         mBackgroundThread.start();
@@ -153,16 +158,58 @@ public class Camera {
     }
 
     public void finalize() {
+        /*
         mBackgroundThread.quit();
         try {
             mBackgroundThread.join();
         } catch (InterruptedException e) {
         }
+        */
+    }
+
+    public void createSurfaceTexture(int w, int h, int tex) {
+        mTexture = tex;
+        mSurfaceTexture = new SurfaceTexture(mTexture);
+        mSurfaceTexture.setDefaultBufferSize(w, h);
+        mSurfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+            @Override
+            public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                synchronized (mSurfaceTexture) {
+                    mSurfaceUpdateRequest = true;
+                }
+            }
+        });
+        createCaptureSession();
+    }
+
+    public void updateTexImage() {
+        if (mSurfaceTexture != null) {
+            synchronized (mSurfaceTexture) {
+                if (mSurfaceUpdateRequest) {
+                    mSurfaceTexture.updateTexImage();
+                    mSurfaceUpdateRequest = false;
+                }
+            }
+        }
     }
 
     private void createCaptureSession() {
-        if (mDevice == null || !mTextureView.isAvailable() || !mIsInitialized) {
+        if (mDevice == null || !mIsInitialized) {
             return;
+        }
+        SurfaceTexture texture = null;
+        if (mTextureView != null) {
+            if (!mTextureView.isAvailable()) {
+                return;
+            }
+            texture = mTextureView.getSurfaceTexture();
+            texture.setDefaultBufferSize(mTextureView.getWidth(), mTextureView.getHeight());
+            Log.d(TAG, "texture " + mTextureView.getWidth() + "x" + mTextureView.getHeight());
+        } else {
+            if (mSurfaceTexture == null) {
+                return;
+            }
+            texture = mSurfaceTexture;
         }
 
         try {
@@ -171,13 +218,10 @@ public class Camera {
             return;
         }
 
-        SurfaceTexture texture = mTextureView.getSurfaceTexture();
-        texture.setDefaultBufferSize(mTextureView.getWidth(), mTextureView.getHeight());
-        Log.d(TAG, "texture " + mTextureView.getWidth() + "x" + mTextureView.getHeight());
         Surface surface = new Surface(texture);
         mRequestBuilder.addTarget(surface);
         try {
-            mDevice.createCaptureSession(Collections.singletonList(surface), mCapStateCallback, null);
+            mDevice.createCaptureSession(Collections.singletonList(surface), mCapStateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             return;
         }

@@ -9,6 +9,7 @@
 extern "C" {
 JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_init(JNIEnv * env, jobject obj,  jint width, jint height);
 JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_draw(JNIEnv * env, jobject obj);
+JNIEXPORT jint JNICALL Java_com_forzaster_cameramemoz_GLMain_genTexture(JNIEnv * env, jobject obj);
 JNIEXPORT jstring JNICALL Java_com_forzaster_cameramemoz_GLMain_stringFromJNI(JNIEnv *env, jobject obj);
 };
 
@@ -20,6 +21,11 @@ JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_init(JNIEnv * env, 
 JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_draw(JNIEnv * env, jobject obj)
 {
     GLMain::instance().draw();
+}
+
+JNIEXPORT jint JNICALL Java_com_forzaster_cameramemoz_GLMain_genTexture(JNIEnv * env, jobject obj)
+{
+    return GLMain::instance().genTexture();
 }
 
 JNIEXPORT jstring JNICALL Java_com_forzaster_cameramemoz_GLMain_stringFromJNI(JNIEnv *env, jobject /* this */) {

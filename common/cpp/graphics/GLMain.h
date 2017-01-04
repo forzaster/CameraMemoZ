@@ -15,6 +15,7 @@ public:
     bool init(int width, int height);
     void draw();
     void resize();
+    unsigned int genTexture();
     static GLMain& instance();
 
 private:

@@ -12,5 +12,6 @@
 #else
 #include <GLES2/gl2.h>
 #endif
+#include <GLES2/gl2ext.h>
 
 #endif //_GL_LIB_H

@@ -10,52 +10,46 @@
 struct Vertex {
     GLfloat pos[2];
     GLubyte rgba[4];
+    GLfloat uv[2];
 };
 
-#ifdef GLESv3
 #define STR(s) #s
 #define STRV(s) STR(s)
 
 #define POS_ATTRIB 0
 #define COLOR_ATTRIB 1
+#define UV_ATTRIB 2
 
 static auto sVertexShader =
         "#version 300 es\n"
                 "layout(location = " STRV(POS_ATTRIB) ") in vec2 pos;\n"
                 "layout(location=" STRV(COLOR_ATTRIB) ") in vec4 color;\n"
+                "layout(location=" STRV(UV_ATTRIB) ") in vec2 uv;\n"
                 "out vec4 vColor;\n"
+                "out vec2 vUv;\n"
                 "void main() {\n"
                 "    gl_Position = vec4(pos, 0.0, 1.0);\n"
                 "    vColor = color;\n"
+                "    vUv = uv;\n"
                 "}\n";
 
 static auto sFragmentShader =
         "#version 300 es\n"
+                "#extension GL_OES_EGL_image_external : require\n"
                 "precision mediump float;\n"
+                "uniform samplerExternalOES tex;\n"
                 "in vec4 vColor;\n"
+                "in vec2 vUv;\n"
                 "out vec4 outColor;\n"
                 "void main() {\n"
-                "    outColor = vColor;\n"
+                "    outColor = texture(tex, vUv);\n"
                 "}\n";
-#else
-static auto sVertexShader =
-        "attribute vec4 vPosition;\n"
-                "void main() {\n"
-                "  gl_Position = vPosition;\n"
-                "}\n";
-
-static auto sFragmentShader =
-        "precision mediump float;\n"
-                "void main() {\n"
-                "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-                "}\n";
-#endif
 
 static const Vertex sQuad[4] = {
-        {{-0.7f, -0.7f}, {0x00, 0xFF, 0x00}},
-        {{ 0.7f, -0.7f}, {0x00, 0x00, 0xFF}},
-        {{-0.7f,  0.7f}, {0xFF, 0x00, 0x00}},
-        {{ 0.7f,  0.7f}, {0xFF, 0xFF, 0xFF}},
+        {{-0.7f, -0.7f}, {0x00, 0xFF, 0x00}, {0.0f, 0.0f}},
+        {{ 0.7f, -0.7f}, {0x00, 0x00, 0xFF}, {1.0f, 0.0f}},
+        {{-0.7f,  0.7f}, {0xFF, 0x00, 0x00}, {0.0f, 1.0f}},
+        {{ 0.7f,  0.7f}, {0xFF, 0xFF, 0xFF}, {1.0f, 1.0f}},
 };
 static const GLfloat sTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f,
                                       0.5f, -0.5f };
@@ -131,6 +125,10 @@ public:
     GLuint mProgram;
     GLuint mVB[VB_COUNT];
     GLuint mVBState;
+    GLuint mTexture;
+    GLuint mTexHandle;
+
+    Impl() : mTexture(0) { }
 };
 
 GLMain::GLMain() :
@@ -161,7 +159,9 @@ bool GLMain::init(int width, int height) {
         LOGE("Could not create program.");
         return false;
     }
-#ifdef GLESv3
+
+    mImpl->mTexHandle = glGetUniformLocation(mImpl->mProgram, "tex");
+
     glGenBuffers(VB_COUNT, mImpl->mVB);
     glBindBuffer(GL_ARRAY_BUFFER, mImpl->mVB[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(sQuad), &sQuad[0], GL_STATIC_DRAW);
@@ -172,15 +172,11 @@ bool GLMain::init(int width, int height) {
     glBindBuffer(GL_ARRAY_BUFFER, mImpl->mVB[0]);
     glVertexAttribPointer(POS_ATTRIB, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
     glVertexAttribPointer(COLOR_ATTRIB, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, rgba));
+    glVertexAttribPointer(UV_ATTRIB, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, uv));
     glEnableVertexAttribArray(POS_ATTRIB);
     glEnableVertexAttribArray(COLOR_ATTRIB);
+    glEnableVertexAttribArray(UV_ATTRIB);
 
-#else
-    mImpl->mVBState = glGetAttribLocation(mImpl->mProgram, "vPosition");
-    checkGlError("glGetAttribLocation");
-    LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
-         mImpl->mVBState);
-#endif
     glViewport(0, 0, width, height);
     checkGlError("glViewport");
     return true;
@@ -199,20 +195,27 @@ void GLMain::draw() {
 
     glUseProgram(mImpl->mProgram);
     checkGlError("glUseProgram");
-#ifdef GLESv3
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, mImpl->mTexture);
+
     glBindVertexArray(mImpl->mVBState);
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 1);
-#else
-    glVertexAttribPointer(mImpl->mVBState, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
-    checkGlError("glVertexAttribPointer");
-    glEnableVertexAttribArray(mImpl->mVBState);
-    checkGlError("glEnableVertexAttribArray");
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    checkGlError("glDrawArrays");
-#endif
+
+    glUseProgram(0);
 }
 
 void GLMain::resize() {
 
+}
+
+unsigned int GLMain::genTexture() {
+    glGenTextures(1, &mImpl->mTexture);
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, mImpl->mTexture);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    return mImpl->mTexture;
 }
 
