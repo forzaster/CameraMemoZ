@@ -46,10 +46,10 @@ static auto sFragmentShader =
                 "}\n";
 
 static const Vertex sQuad[4] = {
-        {{-0.7f, -0.7f}, {0x00, 0xFF, 0x00}, {0.0f, 0.0f}},
-        {{ 0.7f, -0.7f}, {0x00, 0x00, 0xFF}, {1.0f, 0.0f}},
-        {{-0.7f,  0.7f}, {0xFF, 0x00, 0x00}, {0.0f, 1.0f}},
-        {{ 0.7f,  0.7f}, {0xFF, 0xFF, 0xFF}, {1.0f, 1.0f}},
+        {{-0.7f, -0.7f}, {0x00, 0xFF, 0x00}, {0.0f, 1.0f}},
+        {{ 0.7f, -0.7f}, {0x00, 0x00, 0xFF}, {1.0f, 1.0f}},
+        {{-0.7f,  0.7f}, {0xFF, 0x00, 0x00}, {0.0f, 0.0f}},
+        {{ 0.7f,  0.7f}, {0xFF, 0xFF, 0xFF}, {1.0f, 0.0f}},
 };
 
 static GLuint loadShader(GLenum shaderType, const char* pSource) {
