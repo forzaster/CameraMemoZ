@@ -2,8 +2,8 @@
 // Created by n-naka on 2016/12/30.
 //
 
-#ifndef CAMERAMEMOZ_GLMAIN_H
-#define CAMERAMEMOZ_GLMAIN_H
+#ifndef _Z_GLMAIN_H
+#define _Z_GLMAIN_H
 
 #include <memory>
 
@@ -24,4 +24,4 @@ private:
 };
 
 
-#endif //CAMERAMEMOZ_GLMAIN_H
+#endif //_Z_GLMAIN_H
