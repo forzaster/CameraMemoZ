@@ -5,17 +5,16 @@
 #include "GLShader.h"
 
 GLShader::GLShader(std::string&& vs, std::string&& fs) :
-mVS(std::forward(vs)),
-mFS(std::forward(fs)) {
+mVS(std::move(vs)),
+mFS(std::move(fs)) {
 }
 
 GLShader::~GLShader() {
 }
 
 void GLShader::load() {
-
 }
 
-void GLShader:;bind() {
+void GLShader::bind() {
 
 }
