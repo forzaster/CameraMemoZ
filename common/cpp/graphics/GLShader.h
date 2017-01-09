@@ -6,16 +6,21 @@
 #define _Z_GLSHADER_H
 
 #include <string>
+#include "gl_lib.h"
 
 class GLShader {
 private:
     std::string mVS;
     std::string mFS;
+    GLuint mProgram;
 public:
     GLShader(std::string&& vs, std::string&& fs);
-    ~GLShader();
+    GLShader(GLShader&& rhs) = default;
+    GLShader(const GLShader& rhs) = default;
     void load();
-    void bind();
+    bool bindStart();
+    void bindEnd();
+    void unload();
 };
 
 

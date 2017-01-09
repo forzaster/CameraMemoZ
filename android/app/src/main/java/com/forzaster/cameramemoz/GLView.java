@@ -19,6 +19,7 @@ public class GLView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
     private IListener mListener;
+    private boolean mNeedToInit;
 
     public GLView(Context context) {
         super(context);
@@ -33,13 +34,19 @@ public class GLView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        mNeedToInit = true;
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        GLMain.instance().init(width, height);
-        if (mListener != null) {
-            mListener.onTextureGenerated(GLMain.instance().genTexture());
+        if (mNeedToInit) {
+            GLMain.instance().init(width, height);
+            if (mListener != null) {
+                mListener.onTextureGenerated(GLMain.instance().genTexture());
+            }
+            mNeedToInit = false;
+        } else {
+            GLMain.instance().resize(width, height);
         }
     }
 

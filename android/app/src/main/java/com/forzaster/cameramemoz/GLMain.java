@@ -22,6 +22,7 @@ public class GLMain {
      * which is packaged with this application.
      */
     public native void init(int width, int height);
+    public native boolean resize(int width, int height);
     public native void draw();
     public native int genTexture();
     public native String stringFromJNI();
