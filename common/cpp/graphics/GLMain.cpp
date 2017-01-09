@@ -35,7 +35,31 @@ public:
              mTexture(0),
              mShader(nullptr),
              mInitialized(false)
-    { }
+    {
+        for (int i = 0; i < VB_COUNT; i++) {
+            mVB[i] = 0;
+        }
+    }
+
+    ~Impl() {
+        finalize();
+    }
+
+    void finalize() {
+        if (mShader)
+        {
+            mShader->unload();
+            mShader = 0;
+        }
+        if (mVBState) {
+            glDeleteVertexArrays(1, &mVBState);
+            mVBState = 0;
+        }
+        glDeleteBuffers(VB_COUNT, mVB);
+        for (int i = 0; i < VB_COUNT; i++) {
+            mVB[i] = 0;
+        }
+    }
 };
 
 GLMain::GLMain() :
@@ -44,10 +68,6 @@ mImpl(std::unique_ptr<Impl>(new Impl()))
 }
 
 GLMain::~GLMain() {
-    if (mImpl->mShader)
-    {
-        mImpl->mShader->unload();
-    }
 }
 
 GLMain& GLMain::instance() {
