@@ -30,12 +30,6 @@ public class CameraFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*
-        Activity activity = getActivity();
-        TextureView textureView = (TextureView)view.findViewById(R.id.texture);
-        mCamera = new Camera(activity.getApplicationContext(), textureView);
-        mCamera.init(activity);
-        */
         Activity activity = getActivity();
         mGLView = new GLView(activity);
         mGLView.setListener(new GLView.IListener() {
@@ -66,6 +60,10 @@ public class CameraFragment extends Fragment {
         if (mCamera != null) {
             mCamera.finalize();
             mCamera = null;
+        }
+        if (mGLView != null) {
+            mGLView.setListener(null);
+            mGLView = null;
         }
     }
 
