@@ -12,4 +12,6 @@
 #define COLOR_ATTRIB 1
 #define UV_ATTRIB 2
 
+
+
 #endif //Z_SHADERATTRIBDEF_H
