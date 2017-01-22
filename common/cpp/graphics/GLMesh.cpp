@@ -4,8 +4,6 @@
 
 #include <memory>
 
-#include "../Log.h"
-
 #include "GLMesh.h"
 
 GLMesh::GLMesh(int vertexNum, GLuint buffer, GLuint vba, GLuint program, GLuint texture) :

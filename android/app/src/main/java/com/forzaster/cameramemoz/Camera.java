@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -98,6 +99,8 @@ public class Camera {
     private int mTexture = -1;
     private SurfaceTexture mSurfaceTexture;
     private boolean mSurfaceUpdateRequest;
+    private Rect mRect;
+    private float mAspectRatio;
 
     public Camera(Context context, TextureView tv) {
         mContext = context;
@@ -140,6 +143,10 @@ public class Camera {
             if (characteristics.get(CameraCharacteristics.LENS_FACING)
                     == CameraCharacteristics.LENS_FACING_BACK) {
                 targetId = id;
+
+
+                mRect = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+                mAspectRatio = (float)mRect.width()/mRect.height();
                 break;
             }
         }
@@ -197,6 +204,7 @@ public class Camera {
         if (mDevice == null || !mIsInitialized) {
             return;
         }
+
         SurfaceTexture texture = null;
         if (mTextureView != null) {
             if (!mTextureView.isAvailable()) {
@@ -213,6 +221,7 @@ public class Camera {
         }
 
         try {
+
             mRequestBuilder = mDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         } catch (CameraAccessException e) {
             return;

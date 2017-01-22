@@ -5,6 +5,7 @@
 #ifndef Z_VIDEOTEXTURESHADER_H
 #define Z_VIDEOTEXTURESHADER_H
 
+#include <string>
 #include "ShaderAttribDef.h"
 
 namespace VideoTextureShader {
