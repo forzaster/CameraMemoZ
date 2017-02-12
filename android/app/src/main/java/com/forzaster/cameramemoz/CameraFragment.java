@@ -52,6 +52,7 @@ public class CameraFragment extends Fragment {
         ((ViewGroup)view).addView(mGLView);
         mCamera = new Camera(activity.getApplicationContext(), null);
         mCamera.init(activity);
+        GLMain.instance().setVideoAspect(mCamera.getAspect());
     }
 
     @Override

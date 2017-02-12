@@ -200,6 +200,10 @@ public class Camera {
         }
     }
 
+    public float getAspect() {
+        return mAspectRatio;
+    }
+
     private void createCaptureSession() {
         if (mDevice == null || !mIsInitialized) {
             return;

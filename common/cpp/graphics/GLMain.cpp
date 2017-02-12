@@ -11,9 +11,15 @@ class GLMain::Impl {
 public:
     std::unique_ptr<GLObjects> mGLObjects;
     bool mInitialized;
+    float mVideoAspect;
+    int mWidth;
+    int mHeight;
 
     Impl() : mGLObjects(nullptr),
-             mInitialized(false)
+             mInitialized(false),
+             mVideoAspect(1.0f),
+             mWidth(0),
+             mHeight(0)
     {
     }
 
@@ -51,8 +57,11 @@ bool GLMain::init(int width, int height) {
     printGLString("Extensions", GL_EXTENSIONS);
 
     LOGI("setupGraphics(%d, %d)", width, height);
+    mImpl->mWidth = width;
+    mImpl->mHeight = height;
 
     mImpl->mGLObjects = std::unique_ptr<GLObjects>(new GLObjects());
+    mImpl->mGLObjects->setVideoAspect(mImpl->mVideoAspect, width, height);
     mImpl->mGLObjects->load();
 
     glViewport(0, 0, width, height);
@@ -88,3 +97,10 @@ unsigned int GLMain::genTexture() {
     return mImpl->mGLObjects->getVideoTexture();
 }
 
+void GLMain::setVideoAspect(float aspect) {
+    mImpl->mVideoAspect = aspect;
+    if (mImpl->mGLObjects) {
+        mImpl->mGLObjects->setVideoAspect(aspect,
+        mImpl->mWidth, mImpl->mHeight);
+    }
+}

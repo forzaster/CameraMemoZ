@@ -11,6 +11,7 @@ JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_init(JNIEnv * env, 
 JNIEXPORT jboolean JNICALL Java_com_forzaster_cameramemoz_GLMain_resize(JNIEnv * env, jobject obj,  jint width, jint height);
 JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_draw(JNIEnv * env, jobject obj);
 JNIEXPORT jint JNICALL Java_com_forzaster_cameramemoz_GLMain_genTexture(JNIEnv * env, jobject obj);
+JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_setVideoAspect(JNIEnv * env, jobject obj, jfloat aspect);
 JNIEXPORT jstring JNICALL Java_com_forzaster_cameramemoz_GLMain_stringFromJNI(JNIEnv *env, jobject obj);
 };
 
@@ -32,6 +33,11 @@ JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_draw(JNIEnv * env, 
 JNIEXPORT jint JNICALL Java_com_forzaster_cameramemoz_GLMain_genTexture(JNIEnv * env, jobject obj)
 {
     return GLMain::instance().genTexture();
+}
+
+JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_setVideoAspect(JNIEnv * env, jobject obj, jfloat aspect)
+{
+    return GLMain::instance().setVideoAspect(aspect);
 }
 
 JNIEXPORT jstring JNICALL Java_com_forzaster_cameramemoz_GLMain_stringFromJNI(JNIEnv *env, jobject /* this */) {

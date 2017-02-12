@@ -30,7 +30,7 @@ static const ShaderName sShaderName[] = {
         {VideoTextureShader::vs(), VideoTextureShader::fs()},
 };
 
-static const Vertex sVertex1[] = {
+static Vertex sVertex1[] = {
         {{-1.0f, -1.0f}, {0x00, 0xFF, 0x00}, {0.0f, 1.0f}},
         {{ 1.0f, -1.0f}, {0x00, 0x00, 0xFF}, {1.0f, 1.0f}},
         {{-1.0f,  1.0f}, {0xFF, 0x00, 0x00}, {0.0f, 0.0f}},

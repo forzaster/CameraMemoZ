@@ -13,6 +13,7 @@ private:
     std::vector<std::unique_ptr<GLMesh>> mMeshes;
     std::vector<GLuint> mShaders;
     GLuint mVideoTexture;
+    float mVideoAspect;
 public:
     GLObjects();
     ~GLObjects() = default;
@@ -20,6 +21,7 @@ public:
     void unload();
     void draw();
     GLuint getVideoTexture() const { return mVideoTexture; };
+    void setVideoAspect(float aspect, int width, int height);
 };
 
 

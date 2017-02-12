@@ -16,6 +16,7 @@ public:
     void draw();
     bool resize(int width, int height);
     unsigned int genTexture();
+    void setVideoAspect(float aspect);
     static GLMain& instance();
 
 private:
