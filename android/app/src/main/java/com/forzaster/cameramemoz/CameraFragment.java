@@ -36,12 +36,18 @@ public class CameraFragment extends Fragment {
             @Override
             public void onTextureGenerated(int tex) {
                 Log.d(TAG, "wxh=" + mGLView.getWidth() + "x" + mGLView.getHeight());
-                mCamera.createSurfaceTexture(mGLView.getWidth(), mGLView.getHeight(), tex);
+                Camera camera = mCamera;
+                if (camera != null) {
+                    camera.createSurfaceTexture(mGLView.getWidth(), mGLView.getHeight(), tex);
+                }
             }
 
             @Override
             public void onPreDrawFrame() {
-                mCamera.updateTexImage();
+                Camera camera = mCamera;
+                if (camera != null) {
+                    camera.updateTexImage();
+                }
             }
 
             @Override

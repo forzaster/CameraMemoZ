@@ -165,37 +165,38 @@ public class Camera {
     }
 
     public void finalize() {
-        /*
+        mDevice.close();
+
         mBackgroundThread.quit();
         try {
             mBackgroundThread.join();
         } catch (InterruptedException e) {
         }
-        */
     }
 
     public void createSurfaceTexture(int w, int h, int tex) {
         mTexture = tex;
-        mSurfaceTexture = new SurfaceTexture(mTexture);
-        mSurfaceTexture.setDefaultBufferSize(w, h);
-        mSurfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+        SurfaceTexture surface = new SurfaceTexture(mTexture);
+        surface.setDefaultBufferSize(w, h);
+        surface.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
             @Override
             public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                synchronized (mSurfaceTexture) {
+                synchronized (Camera.this) {
                     mSurfaceUpdateRequest = true;
                 }
             }
         });
+        synchronized (this) {
+            mSurfaceTexture = surface;
+        }
         createCaptureSession();
     }
 
     public void updateTexImage() {
-        if (mSurfaceTexture != null) {
-            synchronized (mSurfaceTexture) {
-                if (mSurfaceUpdateRequest) {
-                    mSurfaceTexture.updateTexImage();
-                    mSurfaceUpdateRequest = false;
-                }
+        synchronized (this) {
+            if (mSurfaceUpdateRequest && mSurfaceTexture != null) {
+                mSurfaceTexture.updateTexImage();
+                mSurfaceUpdateRequest = false;
             }
         }
     }
@@ -218,10 +219,12 @@ public class Camera {
             texture.setDefaultBufferSize(mTextureView.getWidth(), mTextureView.getHeight());
             Log.d(TAG, "texture " + mTextureView.getWidth() + "x" + mTextureView.getHeight());
         } else {
-            if (mSurfaceTexture == null) {
-                return;
+            synchronized (this) {
+                if (mSurfaceTexture == null) {
+                    return;
+                }
+                texture = mSurfaceTexture;
             }
-            texture = mSurfaceTexture;
         }
 
         try {
