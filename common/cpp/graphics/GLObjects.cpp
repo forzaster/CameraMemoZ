@@ -158,11 +158,9 @@ void GLObjects::draw() {
     }
 }
 
-void GLObjects::setVideoAspect(float aspect, int width, int height) {
-    mVideoAspect = aspect;
-    float surfaceAspect = (float)width / height;
-    if (surfaceAspect < mVideoAspect)
-    {
+void GLObjects::setVideoAspect(float videoAspect, float surfaceAspect) {
+    mVideoAspect = videoAspect;
+    if (surfaceAspect < mVideoAspect) {
         float y = (1.0f / mVideoAspect) / (1.0f / surfaceAspect);
         sVertex1[0].pos[1] = -y;
         sVertex1[1].pos[1] = -y;

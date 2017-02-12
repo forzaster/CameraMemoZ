@@ -21,7 +21,7 @@ public:
     void unload();
     void draw();
     GLuint getVideoTexture() const { return mVideoTexture; };
-    void setVideoAspect(float aspect, int width, int height);
+    void setVideoAspect(float videoAspect, float surfaceAspect);
 };
 
 
