@@ -4,7 +4,7 @@
 
 #include <jni.h>
 #include <string>
-#include "common/graphics/GLMain.h"
+#include "graphics/GLMain.h"
 
 extern "C" {
 JNIEXPORT void JNICALL Java_com_forzaster_cameramemoz_GLMain_init(JNIEnv * env, jobject obj,  jint width, jint height);

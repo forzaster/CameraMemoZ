@@ -1,0 +1,3 @@
+[submodule "libs/myGlUtil"]
+	path = libs/myGlUtil
+	url = git@github.com:forzaster/myGlUtil.git

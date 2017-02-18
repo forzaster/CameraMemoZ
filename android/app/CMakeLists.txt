@@ -19,9 +19,12 @@ add_library( # Sets the name of the library.
              # Associated headers in the same location as their source
              # file are automatically included.
              src/main/cpp/GLMainJNI.cpp
-             src/main/cpp/common/graphics/GLMain.cpp
-             src/main/cpp/common/graphics/GLObjects.cpp
-             src/main/cpp/common/graphics/GLMesh.cpp)
+             ../../libs/myGlUtil/src/graphics/GLMain.cpp
+             ../../libs/myGlUtil/src/graphics/GLObjects.cpp
+             ../../libs/myGlUtil/src/graphics/GLMesh.cpp)
+
+# Specifies a path to native header files.
+include_directories(../../libs/myGlUtil/src/)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because system libraries are included in the search path by
