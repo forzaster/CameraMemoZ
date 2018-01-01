@@ -65,7 +65,7 @@ public class CameraFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (mCamera != null) {
-            mCamera.finalize();
+            mCamera.finish();
             mCamera = null;
         }
         if (mGLView != null) {

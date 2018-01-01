@@ -59,11 +59,13 @@ public class Camera {
                 session.setRepeatingRequest(mCaptureRequest, mCaptureCallback, mBackgroundHandler);
             } catch (CameraAccessException e) {
             }
+
+            mCaptureSession = session;
         }
 
         @Override
         public void onConfigureFailed(CameraCaptureSession session) {
-
+            mCaptureSession = null;
         }
     };
 
@@ -93,6 +95,7 @@ public class Camera {
     };
 
     private CameraDevice mDevice;
+    private CameraCaptureSession mCaptureSession;
     private boolean mIsInitialized;
     private CaptureRequest.Builder mRequestBuilder;
     private CaptureRequest mCaptureRequest;
@@ -164,8 +167,15 @@ public class Camera {
         createCaptureSession();
     }
 
-    public void finalize() {
-        mDevice.close();
+    public void finish() {
+        if (mDevice != null) {
+            mDevice.close();
+            mDevice = null;
+        }
+        if (mCaptureSession != null) {
+            mCaptureSession.close();
+            mCaptureSession = null;
+        }
 
         mBackgroundThread.quit();
         try {
@@ -228,7 +238,6 @@ public class Camera {
         }
 
         try {
-
             mRequestBuilder = mDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         } catch (CameraAccessException e) {
             return;
